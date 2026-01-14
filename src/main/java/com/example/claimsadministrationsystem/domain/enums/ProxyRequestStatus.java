@@ -79,5 +79,11 @@ public enum ProxyRequestStatus {
         return DISCLAIMER;
     }
 
+    public ProxyRequestStatus complete(){
+        checkIsTerminal();
+        checkCannotTransitionTo(COMPLETED);
+        return COMPLETED;
+    }
+
 
 }
