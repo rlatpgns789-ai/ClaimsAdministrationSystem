@@ -24,6 +24,10 @@ public enum ProxyRequestStatus {
             );
 
 
+    public static Set<ProxyRequestStatus> activeStatuses() {
+        return Set.of(PENDING, IN_PROGRESS, FEE_CLAIM);
+    }
+
     public void checkIsTerminal(){
         if (ALLOWED_TRANSITIONS.get(this).isEmpty()){
             throw new IllegalStateException(
