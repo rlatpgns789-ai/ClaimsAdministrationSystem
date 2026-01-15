@@ -74,10 +74,10 @@ public class ProxyRequestService {
         return proxyRequest.getId();
     }
 
-    public ProxyRequestDetailResponse readProxyRequest(UUID proxyRequestId){
+    public ProxyRequest readProxyRequest(UUID proxyRequestId){
         ProxyRequest proxyRequest = proxyRequestRepository.findById(proxyRequestId).orElseThrow(() -> new EntityNotFoundException("Proxy request not found"));
 
-        return ProxyRequestDetailResponse.from(proxyRequest);
+        return proxyRequest;
     }
 
     @Transactional

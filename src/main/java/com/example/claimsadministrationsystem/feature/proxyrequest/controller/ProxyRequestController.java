@@ -41,7 +41,7 @@ public class ProxyRequestController {
     @GetMapping("/{proxyRequestId}")
     public ResponseEntity<ResponseDto<ProxyRequestDetailResponse>> getProxyRequest(@PathVariable UUID proxyRequestId) {
 
-        return ResponseEntity.ok(new ResponseDto<>(true, proxyRequestService.readProxyRequest(proxyRequestId)));
+        return ResponseEntity.ok(new ResponseDto<>(true, ProxyRequestDetailResponse.from(proxyRequestService.readProxyRequest(proxyRequestId))));
     }
 
 

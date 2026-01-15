@@ -10,11 +10,8 @@ import java.util.List;
 import java.util.UUID;
 
 public interface UserTreatmentRepository extends JpaRepository<UserTreatment, UUID> {
-
-    List<UserTreatment> findByUserIdAndHospitalId(UUID userId, UUID hospitalId);
-
     @Query("""
-        select new com.example.claimsadministrationsystem.repository.dto.HospitalAmount(
+        select new com.example.claimsadministrationsystem.feature.proxyrequest.dto.HospitalAmount(
             ut.hospitalId,
             coalesce(sum(ut.treatmentAmount), 0)
         )
