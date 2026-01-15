@@ -42,5 +42,9 @@ public class ProxyRequest extends BaseTimeEntity {
         this.commissionAmount = commissionAmount;
     }
 
+    public void cancel() {
+        this.status = this.status.cancel();
+    }
+
 
 }

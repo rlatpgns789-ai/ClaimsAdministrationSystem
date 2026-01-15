@@ -13,8 +13,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(InvalidProxyRequestStatusTransitionException.class)
     public ResponseEntity<ErrorResponse> handleInvalidTransition(InvalidProxyRequestStatusTransitionException e) {
-        return ResponseEntity.status(HttpStatus.CONFLICT)
-                .body(ErrorResponse.of(HttpStatus.CONFLICT, e.getMessage()));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ErrorResponse.of(HttpStatus.BAD_REQUEST, e.getMessage()));
     }
 
 }

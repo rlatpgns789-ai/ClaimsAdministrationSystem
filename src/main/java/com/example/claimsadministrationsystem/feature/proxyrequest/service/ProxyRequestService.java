@@ -5,9 +5,13 @@ import com.example.claimsadministrationsystem.domain.ProxyRequestUnit;
 import com.example.claimsadministrationsystem.domain.UserTreatment;
 import com.example.claimsadministrationsystem.domain.enums.ProxyRequestStatus;
 import com.example.claimsadministrationsystem.feature.proxyrequest.dto.CreateProxyRequestDto;
+import com.example.claimsadministrationsystem.feature.proxyrequest.dto.ProxyRequestDetailResponse;
+import com.example.claimsadministrationsystem.feature.proxyrequest.dto.ProxyRequestUpdateRequest;
 import com.example.claimsadministrationsystem.feature.proxyrequest.repository.ProxyRequestRepository;
 import com.example.claimsadministrationsystem.feature.proxyrequest.repository.ProxyRequestUnitRepository;
 import com.example.claimsadministrationsystem.feature.usertreatment.repository.UserTreatmentRepository;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -41,15 +45,22 @@ public class ProxyRequestService {
 
     }
 
-    public void readProxyRequest(){
+    public ProxyRequestDetailResponse readProxyRequest(UUID proxyRequestId){
+        ProxyRequest proxyRequest = proxyRequestRepository.findById(proxyRequestId).orElseThrow(() -> new EntityNotFoundException("Proxy request not found"));
+
+        return ProxyRequestDetailResponse.from(proxyRequest);
+    }
+
+    public void updateProxyRequest(ProxyRequestUpdateRequest request){
 
     }
 
-    public void updateProxyRequest(){
+    @Transactional
+    public void cancelProxyRequest(UUID proxyRequestId){
 
-    }
+        ProxyRequest proxyRequest = proxyRequestRepository.findById(proxyRequestId).orElseThrow(() -> new EntityNotFoundException("Proxy request not found"));
 
-    public void cancelProxyRequest(){
+        proxyRequest.cancel();
 
     }
 

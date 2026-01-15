@@ -2,8 +2,10 @@ package com.example.claimsadministrationsystem.feature.proxyrequest.controller;
 
 import com.example.claimsadministrationsystem.common.dto.ResponseDto;
 import com.example.claimsadministrationsystem.feature.proxyrequest.dto.CreateProxyRequestDto;
+import com.example.claimsadministrationsystem.feature.proxyrequest.dto.ProxyRequestDetailResponse;
 import com.example.claimsadministrationsystem.feature.proxyrequest.service.ProxyRequestService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,15 +32,17 @@ public class ProxyRequestController {
     }
 
     @DeleteMapping("/{proxyRequestId}")
-    public ResponseEntity cancelProxyRequest(@PathVariable UUID proxyRequestId) {
+    public ResponseEntity<ResponseDto<>> cancelProxyRequest(@PathVariable UUID proxyRequestId) {
 
-        return null;
+        proxyRequestService.cancelProxyRequest(proxyRequestId);
+
+        return ResponseEntity.ok(new ResponseDto<>(true, null));
     }
 
     @GetMapping("/{proxyRequestId}")
-    public ResponseEntity getProxyRequest(@PathVariable UUID proxyRequestId) {
+    public ResponseEntity<ResponseDto<ProxyRequestDetailResponse>> getProxyRequest(@PathVariable UUID proxyRequestId) {
 
-        return null;
+        return ResponseEntity.ok(new ResponseDto<>(true, proxyRequestService.readProxyRequest(proxyRequestId)));
     }
 
 
