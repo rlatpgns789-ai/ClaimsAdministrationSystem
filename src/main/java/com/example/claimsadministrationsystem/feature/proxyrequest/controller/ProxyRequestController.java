@@ -3,6 +3,7 @@ package com.example.claimsadministrationsystem.feature.proxyrequest.controller;
 import com.example.claimsadministrationsystem.common.dto.ResponseDto;
 import com.example.claimsadministrationsystem.feature.proxyrequest.dto.CreateProxyRequestDto;
 import com.example.claimsadministrationsystem.feature.proxyrequest.dto.ProxyRequestDetailResponse;
+import com.example.claimsadministrationsystem.feature.proxyrequest.dto.ProxyRequestUpdateRequest;
 import com.example.claimsadministrationsystem.feature.proxyrequest.service.ProxyRequestService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -26,16 +27,14 @@ public class ProxyRequestController {
 
 
     @PatchMapping("/{proxyRequestId}/status")
-    public ResponseEntity updateProxyRequest(@PathVariable UUID proxyRequestId) {
-
-        return null;
+    public ResponseEntity<ResponseDto<UUID>> updateProxyRequest(@PathVariable UUID proxyRequestId, @RequestBody ProxyRequestUpdateRequest request) {
+        return ResponseEntity.ok(new ResponseDto<>(true, proxyRequestService.updateProxyRequest(proxyRequestId, request)));
     }
 
     @DeleteMapping("/{proxyRequestId}")
-    public ResponseEntity<ResponseDto<>> cancelProxyRequest(@PathVariable UUID proxyRequestId) {
+    public ResponseEntity<ResponseDto> cancelProxyRequest(@PathVariable UUID proxyRequestId) {
 
         proxyRequestService.cancelProxyRequest(proxyRequestId);
-
         return ResponseEntity.ok(new ResponseDto<>(true, null));
     }
 

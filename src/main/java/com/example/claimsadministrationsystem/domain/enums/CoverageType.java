@@ -27,6 +27,8 @@ public enum CoverageType {
         return this.category == Category.GENERAL;
     }
 
+    public boolean isPrepaid(){return this.timing == Timing.PREPAID;}
+
 
     public enum Category { GENERAL, EXPRESS }
     public enum Timing { PREPAID, POSTPAID }

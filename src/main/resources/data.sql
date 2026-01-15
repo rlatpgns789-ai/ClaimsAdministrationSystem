@@ -1,8 +1,3 @@
--- =========================================================
--- USER_TREATMENT
--- 유저별 병원 진료 기록 (초기 데이터)
--- =========================================================
-
 INSERT INTO user_treatment (
     id,
     hospital_id,
@@ -44,19 +39,14 @@ INSERT INTO user_treatment (
           CURRENT_TIMESTAMP
       );
 
--- =========================================================
--- PROXY_REQUEST
--- user(9999...)가 병원 2곳을 선택하여 대행 신청
--- totalMissedInsuranceAmount = 350000 + 180000 = 530000
--- commissionAmount = 예시 10%
--- =========================================================
-
 INSERT INTO proxy_request (
     id,
     user_id,
     status,
     total_missed_insurance_amount,
     commission_amount,
+    coverage_type,
+    reason,
     registered_at,
     modified_at
 ) VALUES
@@ -65,16 +55,35 @@ INSERT INTO proxy_request (
         '99999999-9999-9999-9999-999999999999',
         'PENDING',
         530000,
-        53000,
+        79500,
+        'GENERAL_PREPAID',
+        NULL,
         CURRENT_TIMESTAMP,
         CURRENT_TIMESTAMP
     );
 
--- =========================================================
--- PROXY_REQUEST_UNIT
--- 병원별 대행 단위
--- unclaimedInsuranceAmount = 해당 병원의 진료금액
--- =========================================================
+INSERT INTO proxy_request (
+    id,
+    user_id,
+    status,
+    total_missed_insurance_amount,
+    commission_amount,
+    coverage_type,
+    reason,
+    registered_at,
+    modified_at
+) VALUES
+    (
+        '77777777-7777-7777-7777-777777777777',
+        '88888888-8888-8888-8888-888888888888',
+        'DISCLAIMER',
+        220000,
+        66000,
+        'EXPRESS_POSTPAID',
+        'Insufficient documents',
+        CURRENT_TIMESTAMP,
+        CURRENT_TIMESTAMP
+    );
 
 INSERT INTO proxy_request_unit (
     id,
@@ -99,44 +108,12 @@ INSERT INTO proxy_request_unit (
           '44444444-4444-4444-4444-444444444444',
           CURRENT_TIMESTAMP,
           CURRENT_TIMESTAMP
+      ),
+      (
+          '88888888-8888-8888-8888-888888888888',
+          'cccccccc-cccc-cccc-cccc-cccccccccccc',
+          220000,
+          '77777777-7777-7777-7777-777777777777',
+          CURRENT_TIMESTAMP,
+          CURRENT_TIMESTAMP
       );
-
--- =========================================================
--- (선택) 다른 유저의 진행 중 대행 예시
--- =========================================================
-
-INSERT INTO proxy_request (
-    id,
-    user_id,
-    status,
-    total_missed_insurance_amount,
-    commission_amount,
-    registered_at,
-    modified_at
-) VALUES
-    (
-        '77777777-7777-7777-7777-777777777777',
-        '88888888-8888-8888-8888-888888888888',
-        'IN_PROGRESS',
-        220000,
-        22000,
-        CURRENT_TIMESTAMP,
-        CURRENT_TIMESTAMP
-    );
-
-INSERT INTO proxy_request_unit (
-    id,
-    hospital_id,
-    unclaimed_insurance_amount,
-    proxy_request_id,
-    registered_at,
-    modified_at
-) VALUES
-    (
-        '88888888-8888-8888-8888-888888888888',
-        'cccccccc-cccc-cccc-cccc-cccccccccccc',
-        220000,
-        '77777777-7777-7777-7777-777777777777',
-        CURRENT_TIMESTAMP,
-        CURRENT_TIMESTAMP
-    );
