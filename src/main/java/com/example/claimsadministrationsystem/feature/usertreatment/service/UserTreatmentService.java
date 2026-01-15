@@ -6,6 +6,7 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -14,8 +15,8 @@ public class UserTreatmentService {
 
     private final UserTreatmentRepository userTreatmentRepository;
 
-    public UserTreatment readUserTreatment(UUID userId){
-        UserTreatment userTreatment = userTreatmentRepository.findById(userId).orElseThrow(()->new EntityNotFoundException("User does not exist"));
+    public List<UserTreatment> readUserTreatment(UUID userId){
+        List<UserTreatment> userTreatment = userTreatmentRepository.findAllByUserId(userId);
 
         return userTreatment;
     }

@@ -7,9 +7,13 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface UserTreatmentRepository extends JpaRepository<UserTreatment, UUID> {
+
+    List<UserTreatment> findAllByUserId(UUID userId);
+
     @Query("""
         select new com.example.claimsadministrationsystem.feature.proxyrequest.dto.HospitalAmount(
             ut.hospitalId,

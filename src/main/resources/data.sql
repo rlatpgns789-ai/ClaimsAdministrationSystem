@@ -39,6 +39,38 @@ INSERT INTO user_treatment (
           CURRENT_TIMESTAMP
       );
 
+INSERT INTO user_treatment (
+    id,
+    hospital_id,
+    user_id,
+    hospital_name,
+    treatment_date,
+    treatment_amount,
+    registered_at,
+    modified_at
+) VALUES
+      (
+          '12121212-1212-1212-1212-121212121212',
+          'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa',
+          '88888888-8888-8888-8888-888888888888',
+          'Seoul General Hospital',
+          DATE '2026-01-06',
+          100000,
+          CURRENT_TIMESTAMP,
+          CURRENT_TIMESTAMP
+      ),
+      (
+          '13131313-1313-1313-1313-131313131313',
+          'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb',
+          '88888888-8888-8888-8888-888888888888',
+          'Busan Medical Center',
+          DATE '2026-01-11',
+          200000,
+          CURRENT_TIMESTAMP,
+          CURRENT_TIMESTAMP
+      );
+
+
 INSERT INTO proxy_request (
     id,
     user_id,

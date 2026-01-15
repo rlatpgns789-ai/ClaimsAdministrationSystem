@@ -1,5 +1,6 @@
 package com.example.claimsadministrationsystem.feature.proxyrequest.service;
 
+import com.example.claimsadministrationsystem.common.error.InvalidProxyRequestStateException;
 import com.example.claimsadministrationsystem.common.error.InvalidProxyRequestStatusTransitionException;
 import com.example.claimsadministrationsystem.domain.ProxyRequest;
 import com.example.claimsadministrationsystem.domain.ProxyRequestUnit;
@@ -54,6 +55,7 @@ public class ProxyRequestService {
 
         ProxyRequest proxyRequest = ProxyRequest.builder()
                 .userId(userId)
+                .coverageType(requestDto.coverageType())
                 .totalMissedInsuranceAmount(totalMissed)
                 .commissionAmount(requestDto.coverageType().calculateCommission(totalMissed))
                 .build();
@@ -144,7 +146,7 @@ public class ProxyRequestService {
                 );
 
         if (exists) {
-            throw new IllegalStateException("Contains hospitals that cannot be reapplied.");
+            throw new InvalidProxyRequestStateException("Contains hospitals that cannot be reapplied.");
         }
     }
 
@@ -154,7 +156,7 @@ public class ProxyRequestService {
         boolean existsActiveProxyRequest  = proxyRequestRepository.existsByUserIdAndStatusIn(userId, ProxyRequestStatus.activeStatuses());
 
         if (existsActiveProxyRequest){
-            throw new IllegalStateException("Can not register proxy request");
+            throw new InvalidProxyRequestStateException("Can not register proxy request");
         }
     }
 
