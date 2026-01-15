@@ -4,9 +4,9 @@ import com.example.claimsadministrationsystem.common.error.InvalidProxyRequestSt
 import com.example.claimsadministrationsystem.domain.ProxyRequest;
 import com.example.claimsadministrationsystem.domain.ProxyRequestUnit;
 import com.example.claimsadministrationsystem.domain.UserTreatment;
-import com.example.claimsadministrationsystem.domain.enums.CoverageType;
 import com.example.claimsadministrationsystem.domain.enums.ProxyRequestStatus;
 import com.example.claimsadministrationsystem.feature.proxyrequest.dto.CreateProxyRequestDto;
+import com.example.claimsadministrationsystem.feature.proxyrequest.dto.HospitalAmount;
 import com.example.claimsadministrationsystem.feature.proxyrequest.dto.ProxyRequestDetailResponse;
 import com.example.claimsadministrationsystem.feature.proxyrequest.dto.ProxyRequestUpdateRequest;
 import com.example.claimsadministrationsystem.feature.proxyrequest.repository.ProxyRequestRepository;
@@ -17,8 +17,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.Proxy;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -26,26 +26,52 @@ public class ProxyRequestService {
 
     private final ProxyRequestRepository proxyRequestRepository;
 
+    private final ProxyRequestUnitRepository proxyRequestUnitRepository;
     private final UserTreatmentRepository userTreatmentRepository;
 
-    private final ProxyRequestUnitRepository proxyRequestUnitRepository;
 
-
-    public void createProxyRequest(CreateProxyRequestDto requestDto){
+    @Transactional
+    public UUID createProxyRequest(CreateProxyRequestDto requestDto) {
 
         UUID userId = requestDto.userId();
+        List<UUID> hospitalIds = requestDto.hospitalList().stream()
+                .distinct()
+                .toList();
 
-        validateCanRegisterProxyRequest(userId);
+        checkCanRegisterUser(userId);
+        checkCanApplyForHospitals(userId, hospitalIds);
 
-//        ProxyRequest proxyRequest = ProxyRequest.builder()
-//                .userId(userId)
-//                .totalMissedInsuranceAmount()
-//                .commissionAmount()
-//                .build();
+        List<HospitalAmount> rows =
+                userTreatmentRepository.sumTreatmentAmountByHospitalIds(userId, hospitalIds);
 
-//        proxyRequestRepository.save(proxyRequest);
+        Map<UUID, Long> amountByHospital = new HashMap<>();
+        long totalMissed = 0L;
 
+        for (HospitalAmount r : rows) {
+            amountByHospital.put(r.hospitalId(), r.amount());
+            totalMissed += r.amount();
+        }
 
+        ProxyRequest proxyRequest = ProxyRequest.builder()
+                .userId(userId)
+                .totalMissedInsuranceAmount(totalMissed)
+                .commissionAmount(requestDto.coverageType().calculateCommission(totalMissed))
+                .build();
+
+        List<ProxyRequestUnit> units = hospitalIds.stream()
+                .map(hospitalId -> ProxyRequestUnit.builder()
+                        .hospitalId(hospitalId)
+                        .unclaimedInsuranceAmount(
+                                amountByHospital.getOrDefault(hospitalId, 0L)
+                        )
+                        .proxyRequest(proxyRequest)
+                        .build())
+                .toList();
+
+        proxyRequestRepository.save(proxyRequest);
+        proxyRequestUnitRepository.saveAll(units);
+
+        return proxyRequest.getId();
     }
 
     public ProxyRequestDetailResponse readProxyRequest(UUID proxyRequestId){
@@ -108,24 +134,28 @@ public class ProxyRequestService {
         proxyRequest.cancel();
 
     }
+    public void checkCanApplyForHospitals(UUID userId, List<UUID> hospitalIds) {
+        boolean exists = proxyRequestUnitRepository
+                .existsByProxyRequest_UserIdAndHospitalIdInAndProxyRequest_StatusIn
+                        (
+                        userId,
+                        hospitalIds,
+                        Set.of(ProxyRequestStatus.COMPLETED, ProxyRequestStatus.DISCLAIMER)
+                );
+
+        if (exists) {
+            throw new IllegalStateException("Contains hospitals that cannot be reapplied.");
+        }
+    }
 
 
-    public void validateCanRegisterProxyRequest(UUID userId){
+    public void checkCanRegisterUser(UUID userId){
 
         boolean existsActiveProxyRequest  = proxyRequestRepository.existsByUserIdAndStatusIn(userId, ProxyRequestStatus.activeStatuses());
 
         if (existsActiveProxyRequest){
             throw new IllegalStateException("Can not register proxy request");
         }
-    }
-    
-    // 사용자 취소 된 병원의 경우 다시 신청 가능
-    // 종결 또는 면책된 대행의 병원의 경우 다시 신청 불가능
-    // 유저 ID로 병원 ID 조회 ->
-
-
-    public void isReapplyHospital(){
-
     }
 
 

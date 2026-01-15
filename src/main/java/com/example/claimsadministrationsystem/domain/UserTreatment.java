@@ -37,4 +37,7 @@ public class UserTreatment extends BaseTimeEntity {
     @Column(name = "treatment_amount", nullable = false)
     private Long treatmentAmount;
 
+
+
+
 }

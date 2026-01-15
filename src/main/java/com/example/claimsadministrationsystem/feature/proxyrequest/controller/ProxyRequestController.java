@@ -20,9 +20,9 @@ public class ProxyRequestController {
     private final ProxyRequestService proxyRequestService;
 
     @PostMapping("")
-    public ResponseEntity<ResponseDto> registerProxyRequest(@RequestBody CreateProxyRequestDto requestDto) {
+    public ResponseEntity<ResponseDto<UUID>> registerProxyRequest(@RequestBody CreateProxyRequestDto requestDto) {
 
-        return null;
+        return ResponseEntity.ok(new ResponseDto<>(true, proxyRequestService.createProxyRequest(requestDto)));
     }
 
 
