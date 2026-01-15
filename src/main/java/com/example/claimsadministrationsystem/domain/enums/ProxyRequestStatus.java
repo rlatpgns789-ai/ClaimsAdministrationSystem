@@ -1,5 +1,7 @@
 package com.example.claimsadministrationsystem.domain.enums;
 
+import com.example.claimsadministrationsystem.common.error.InvalidProxyRequestStatusTransitionException;
+
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
@@ -30,7 +32,7 @@ public enum ProxyRequestStatus {
 
     public void checkIsTerminal(){
         if (ALLOWED_TRANSITIONS.get(this).isEmpty()){
-            throw new IllegalStateException(
+            throw new InvalidProxyRequestStatusTransitionException(
                     "Cannot transition from terminal status: " + this
             );
         }
@@ -40,7 +42,7 @@ public enum ProxyRequestStatus {
         Set<ProxyRequestStatus> target = ALLOWED_TRANSITIONS.get(this);
 
        if (!target.contains(status)){
-           throw new IllegalStateException(
+           throw new InvalidProxyRequestStatusTransitionException(
                    "Invalid status transition order: " + this + " -> " + status
            );
        }
@@ -69,7 +71,7 @@ public enum ProxyRequestStatus {
         checkIsTerminal();
         checkCannotTransitionTo(CANCELLED);
         if (this != PENDING){
-            throw new IllegalStateException("Unexpected value: " + this.name());
+            throw new InvalidProxyRequestStatusTransitionException("Unexpected value: " + this.name());
         }
 
         return CANCELLED;
@@ -78,7 +80,7 @@ public enum ProxyRequestStatus {
     public ProxyRequestStatus disclaimer(){
         checkIsTerminal();
         if (this != PENDING && this != IN_PROGRESS){
-            throw new IllegalStateException("Unexpected value: " + this.name());
+            throw new InvalidProxyRequestStatusTransitionException("Unexpected value: " + this.name());
         }
         return DISCLAIMER;
     }

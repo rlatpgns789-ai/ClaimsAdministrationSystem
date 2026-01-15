@@ -1,7 +1,6 @@
 package com.example.claimsadministrationsystem.feature.proxyrequest.controller;
 
 import com.example.claimsadministrationsystem.common.dto.ResponseDto;
-import com.example.claimsadministrationsystem.domain.ProxyRequest;
 import com.example.claimsadministrationsystem.feature.proxyrequest.dto.CreateProxyRequestDto;
 import com.example.claimsadministrationsystem.feature.proxyrequest.service.ProxyRequestService;
 import lombok.RequiredArgsConstructor;

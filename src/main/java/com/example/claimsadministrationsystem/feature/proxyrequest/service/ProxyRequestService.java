@@ -9,11 +9,8 @@ import com.example.claimsadministrationsystem.feature.proxyrequest.repository.Pr
 import com.example.claimsadministrationsystem.feature.proxyrequest.repository.ProxyRequestUnitRepository;
 import com.example.claimsadministrationsystem.feature.usertreatment.repository.UserTreatmentRepository;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.query.sql.internal.ParameterRecognizerImpl;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.Proxy;
-import java.util.List;
 import java.util.UUID;
 
 @Service
